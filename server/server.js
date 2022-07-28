@@ -1,9 +1,21 @@
 const express = require('express');
 const path = require('path');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
 
 app.use(express.static(path.join(__dirname, '../build')));
+
+app.use(
+  '/api',
+  createProxyMiddleware({
+    target: process.env.API_HOST,
+    changeOrigin: true,
+    pathRewrite: {
+      '^/api': '/'
+    },
+  })
+);
 
 app.get('/health', function (req, res) {
   res.json({ status: 'UP' });
@@ -14,6 +26,6 @@ app.get('/*', function (req, res) {
 });
 
 const port = process.env.PORT ?? 3000;
-app.listen(port, function() {
-    console.info(`Server listening on http://localhost:${port}`);
+app.listen(port, function () {
+  console.info(`Server listening on http://localhost:${port}`);
 });

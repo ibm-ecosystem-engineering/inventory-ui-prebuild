@@ -1,26 +1,19 @@
 import React, { Component } from 'react';
-import { Content, Theme } from '@carbon/react';
-import AppHeader from './components/Header';
-import NotFound from './components/NotFound';
-import { Route, Routes, BrowserRouter } from 'react-router-dom';
-import LandingPage from './content/LandingPage';
+import UIShell from './content/UIShell/UIShell';
 import './App.scss';
+import { StockItemService } from "./services/stock-item.service";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.stockService = props.stockService || new StockItemService();
+  }
+
   render() {
     return (
       <div className="app">
-        <BrowserRouter>
-          <Theme theme="g90">
-            <AppHeader />
-          </Theme>
-          <Content>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Content>
-        </BrowserRouter>
+        <UIShell stockService={this.stockService} />
       </div>
     );
   }
